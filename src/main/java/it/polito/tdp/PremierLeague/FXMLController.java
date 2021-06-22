@@ -5,9 +5,12 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Opponenti;
+import it.polito.tdp.PremierLeague.model.Player;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -44,17 +47,57 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	txtResult.clear();
+    	double x;
+    	try {
+    		x=Double.parseDouble(this.txtGoals.getText());
+    	}catch(NumberFormatException e) {
+    		this.txtResult.setText("Inserire un numero minimo di goal");
+    		return;
+    	}
+    	
+    	this.model.creaGrafo(x);
+    	
+    	this.txtResult.setText("Grafo creato con: "+this.model.nVertici()+" vertici e "+this.model.nArchi()+" archi.");
     }
 
     @FXML
     void doDreamTeam(ActionEvent event) {
-
+    	txtResult.clear();
+    	
+    	int k;
+    	try {
+    		k=Integer.parseInt(this.txtK.getText());
+    	}catch(NumberFormatException e) {
+    		this.txtResult.setText("Inserire un numero intero di giocatori");
+    		return;
+    	}
+    	
+    	if(this.model.getGrafo()==null) {
+    		this.txtResult.setText("Creare prima il grafo");
+    		return;
+    	}
+    	
+    	List<Player> team=this.model.dreamTeam(k);
+    	this.txtResult.appendText("Dream team con grado di titolarità "+this.model.getGradoMax()+": \n");
+    	for(Player p:team) {
+    		this.txtResult.appendText(p.getName()+"\n");
+    	}
     }
 
     @FXML
     void doTopPlayer(ActionEvent event) {
-
+    	txtResult.clear();
+    	if(this.model.getGrafo()==null) {
+    		this.txtResult.setText("Creare prima il grafo!");
+    		return;
+    	}
+    	
+    	this.txtResult.appendText("TOP PLAYER: "+model.giocatoreMigliore()+"\n\n"+"AVVERSARI BATTUTI: "+"\n");
+    	
+    	for(Opponenti o:this.model.avversariBattuti()) {
+    		this.txtResult.appendText(o.toString()+"\n");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
